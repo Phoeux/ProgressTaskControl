@@ -117,5 +117,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 GRAPHENE = {
-    "SCHEMA": "src.schema.schema"
+    "SCHEMA": "api.schema.schema"
 }

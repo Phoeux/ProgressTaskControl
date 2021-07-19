@@ -1,4 +1,5 @@
 import graphene
+from django.db.models import Q
 from graphene_django import DjangoObjectType
 
 from api.models import Tasks, User
@@ -85,12 +86,35 @@ class CreateTask(graphene.Mutation):
         )
 
 
+class UpdateTaskInput(graphene.InputObjectType):
+    title = graphene.String()
+    description = graphene.String()
+    links = graphene.String()
+    progress = graphene.String()
+    # user = graphene.Field(UserType)
+
+
+class UpdateTask(graphene.Mutation):
+    task = graphene.Field(TasksType)
+
+    class Arguments:
+        id = graphene.ID(required=True)
+        upd_data = UpdateTaskInput(required=True)
+
+    def mutate(self, info, id, upd_data=None):
+        task = Tasks.objects.get(id=id)
+        for key, value in upd_data.items():
+            setattr(task, key, value)
+        task.save()
+        return UpdateTask(task=task)
+
+
 class DeleteTask(graphene.Mutation):
     ok = graphene.Boolean()
     task = graphene.Field(TasksType)
 
     class Arguments:
-        id = graphene.ID()
+        id = graphene.ID(required=True)
 
     def mutate(self, info, id):
         if info.context.user.is_anonymous:
@@ -103,11 +127,14 @@ class DeleteTask(graphene.Mutation):
 
 
 class Query(graphene.ObjectType):
-    tasks = graphene.List(TasksType)
+    tasks = graphene.List(TasksType, search=graphene.String())
     users = graphene.List(UserType)
     auth = graphene.Field(UserType)
 
-    def resolve_tasks(self, info, **kwargs):
+    def resolve_tasks(self, info, search=None, **kwargs):
+        if search:
+            filter = (Q(user__username__icontains=search))
+            return Tasks.objects.filter(filter)
         return Tasks.objects.all()
 
     def resolve_users(self, info):
@@ -124,4 +151,4 @@ class Mutation(graphene.ObjectType):
     create_task = CreateTask.Field()
     create_user = CreateUser.Field()
     delete_task = DeleteTask.Field()
-
+    update_task = UpdateTask.Field()

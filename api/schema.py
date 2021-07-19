@@ -15,7 +15,7 @@ class UserType(DjangoObjectType):
 class TasksType(DjangoObjectType):
     class Meta:
         model = Tasks
-
+        fields = '__all__'
 
 EnumUserRoles = graphene.Enum.from_enum(User.Role)
 
@@ -76,6 +76,7 @@ class UpdateTaskInput(graphene.InputObjectType):
     description = graphene.String()
     links = graphene.String()
     progress = graphene.String()
+    finished = graphene.Boolean()
     user_id = graphene.ID()
 
 
@@ -91,8 +92,14 @@ class UpdateTask(graphene.Mutation):
         if info.context.user.role == "MANAGER":
             for key, value in upd_data.items():
                 setattr(task, key, value)
-        if info.context.user.role == "USER" and 'progress' in upd_data.keys() and len(upd_data) == 1:
+        elif info.context.user.role == "USER" and 'progress' in upd_data.keys() and len(upd_data) == 1:
             task.progress = upd_data['progress']
+        elif info.context.user.role == "USER" and 'finished' in upd_data.keys() and len(upd_data) == 1:
+            task.finished = upd_data['finished']
+        elif info.context.user.role == "USER" and 'progress' in upd_data.keys() and 'finished' in upd_data.keys() and\
+                len(upd_data) == 2:
+            task.progress = upd_data['progress']
+            task.finished = upd_data['finished']
         else:
             return Exception(
                 "Don't have permissions! Only manager can edit task. Simple user can edit only his progress")

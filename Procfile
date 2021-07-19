@@ -1,1 +1,1 @@
-web: gunicorn ProgressTaskControl.wsgi
+web: gunicorn src.wsgi

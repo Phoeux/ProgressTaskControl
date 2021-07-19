@@ -23,5 +23,5 @@ urlpatterns = [
     path('', include('api.urls')),
     path('admin/', admin.site.urls),
     path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
-    path('playground/', GraphQLPlaygroundView.as_view(endpoint="http://127.0.0.1:8001/graphql/"))
+    path('playground/', GraphQLPlaygroundView.as_view(endpoint="http://192.168.0.106/graphql/"))
 ]

@@ -2,6 +2,7 @@ import graphene
 from django.db.models import Q
 from graphene_django import DjangoObjectType
 
+
 from api.models import Tasks, User
 
 
@@ -14,13 +15,6 @@ class UserType(DjangoObjectType):
 class TasksType(DjangoObjectType):
     class Meta:
         model = Tasks
-
-    @classmethod
-    def get_queryset(cls, queryset, info):
-        """Вывести юзеру только его таски усли не манагер"""
-        # if info.context.user.is_anonymous:
-        #     return queryset.filter(published=True)
-        return queryset
 
 
 EnumUserRoles = graphene.Enum.from_enum(User.Role)
@@ -36,6 +30,8 @@ class CreateUser(graphene.Mutation):
         role = graphene.Argument(EnumUserRoles)
 
     def mutate(self, info, username, password, email, role):
+        if not info.context.user.role == "MANAGER":
+            raise Exception("Only Manager can create users")
         user = User(
             username=username,
             email=email,
@@ -48,12 +44,8 @@ class CreateUser(graphene.Mutation):
 
 
 class CreateTask(graphene.Mutation):
-    id = graphene.Int()
-    title = graphene.String()
-    description = graphene.String()
-    links = graphene.String()
-    progress = graphene.String()
     user = graphene.Field(UserType)
+    task = graphene.Field(TasksType)
 
     class Arguments:
         title = graphene.String()
@@ -76,14 +68,7 @@ class CreateTask(graphene.Mutation):
             progress=progress,
             user=user
         )
-        return CreateTask(
-            id=task.id,
-            title=task.title,
-            description=task.description,
-            links=task.links,
-            progress=task.progress,
-            user=user
-        )
+        return CreateTask(task=task)
 
 
 class UpdateTaskInput(graphene.InputObjectType):
@@ -91,7 +76,7 @@ class UpdateTaskInput(graphene.InputObjectType):
     description = graphene.String()
     links = graphene.String()
     progress = graphene.String()
-    # user = graphene.Field(UserType)
+    user_id = graphene.ID()
 
 
 class UpdateTask(graphene.Mutation):
@@ -103,8 +88,14 @@ class UpdateTask(graphene.Mutation):
 
     def mutate(self, info, id, upd_data=None):
         task = Tasks.objects.get(id=id)
-        for key, value in upd_data.items():
-            setattr(task, key, value)
+        if info.context.user.role == "MANAGER":
+            for key, value in upd_data.items():
+                setattr(task, key, value)
+        if info.context.user.role == "USER" and 'progress' in upd_data.keys() and len(upd_data) == 1:
+            task.progress = upd_data['progress']
+        else:
+            return Exception(
+                "Don't have permissions! Only manager can edit task. Simple user can edit only his progress")
         task.save()
         return UpdateTask(task=task)
 
@@ -132,12 +123,19 @@ class Query(graphene.ObjectType):
     auth = graphene.Field(UserType)
 
     def resolve_tasks(self, info, search=None, **kwargs):
-        if search:
-            filter = (Q(user__username__icontains=search))
-            return Tasks.objects.filter(filter)
-        return Tasks.objects.all()
+        if info.context.user.is_anonymous:
+            raise Exception('Not logged in!')
+        if info.context.user.role == "MANAGER":
+            if search:
+                filter = (Q(user__username__icontains=search))
+                return Tasks.objects.filter(filter)
+            return Tasks.objects.all()
+        if info.context.user.role == "USER":
+            return Tasks.objects.filter(user=info.context.user)
 
     def resolve_users(self, info):
+        if info.context.user.is_anonymous:
+            raise Exception('Not logged in!')
         return User.objects.all()
 
     def resolve_auth(self, info):

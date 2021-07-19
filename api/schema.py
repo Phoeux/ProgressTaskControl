@@ -1,5 +1,4 @@
 import graphene
-from django.contrib.auth import get_user_model
 from graphene_django import DjangoObjectType
 
 from api.models import Tasks, User
@@ -9,7 +8,6 @@ class UserType(DjangoObjectType):
     class Meta:
         model = User
         fields = '__all__'
-        # convert_choices_to_enum = ['role']
 
 
 class TasksType(DjangoObjectType):
@@ -24,7 +22,6 @@ class TasksType(DjangoObjectType):
         return queryset
 
 
-# RoleChoice = UserType._meta.fields["role"].type
 EnumUserRoles = graphene.Enum.from_enum(User.Role)
 
 
@@ -35,9 +32,7 @@ class CreateUser(graphene.Mutation):
         username = graphene.String(required=True)
         password = graphene.String(required=True)
         email = graphene.String(required=True)
-        # role = graphene.List(of_type=RoleChoice)
         role = graphene.Argument(EnumUserRoles)
-        # role = graphene.String()
 
     def mutate(self, info, username, password, email, role):
         user = User(
@@ -66,12 +61,12 @@ class CreateTask(graphene.Mutation):
         progress = graphene.String()
         user_id = graphene.Int()
 
-    def mutate(self, info, title, description, links, progress, user):
+    def mutate(self, info, title, description, links, progress, user_id):
         if info.context.user.is_anonymous:
             raise Exception('Not logged in!')
-        if not info.context.user.role.MANAGER:
+        if not info.context.user.role == "MANAGER":
             raise Exception("Only Manager can create tasks")
-        user = User.objects.get(id=user)
+        user = User.objects.get(id=user_id)
 
         task = Tasks.objects.create(
             title=title,
@@ -88,6 +83,23 @@ class CreateTask(graphene.Mutation):
             progress=task.progress,
             user=user
         )
+
+
+class DeleteTask(graphene.Mutation):
+    ok = graphene.Boolean()
+    task = graphene.Field(TasksType)
+
+    class Arguments:
+        id = graphene.ID()
+
+    def mutate(self, info, id):
+        if info.context.user.is_anonymous:
+            raise Exception('Not logged in!')
+        if not info.context.user.role == "MANAGER":
+            raise Exception("Only Manager can create tasks")
+        task = Tasks.objects.get(id=id)
+        task.delete()
+        return DeleteTask(ok=True, task=task)
 
 
 class Query(graphene.ObjectType):
@@ -111,5 +123,5 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     create_task = CreateTask.Field()
     create_user = CreateUser.Field()
+    delete_task = DeleteTask.Field()
 
-# schema = graphene.Schema(query=Query, mutation=Mutation)

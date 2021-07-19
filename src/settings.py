@@ -25,7 +25,7 @@ SECRET_KEY = 'uxmr0l-zg8dxfi6d9su4i655%4p#xt)w%f)6uei&1+cap!t+nt'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.106']
+ALLOWED_HOSTS = ['progress-task-control.herokuapp.com']
 
 # Application definition
 
@@ -78,8 +78,12 @@ WSGI_APPLICATION = 'src.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get("NAME"),
+        'USER': os.environ.get("USER"),
+        "PASSWORD": os.environ.get('PASSWORD'),
+        'HOST': os.environ.get('HOST'),
+        'PORT': 5432
     }
 }
 
@@ -104,9 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Minsk'
 
 USE_I18N = True
 

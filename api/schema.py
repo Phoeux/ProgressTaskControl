@@ -51,13 +51,14 @@ class CreateTask(graphene.Mutation):
     task = graphene.Field(TasksType)
 
     class Arguments:
-        title = graphene.String()
-        description = graphene.String()
-        links = graphene.String()
+        title = graphene.String(required=True)
+        description = graphene.String(required=True)
+        links = graphene.String(required=True)
         progress = graphene.String()
-        user_id = graphene.ID()
+        user_id = graphene.ID(required=True)
+        date_to_check = graphene.Date()
 
-    def mutate(self, info, title, description, links, progress, user_id):
+    def mutate(self, info, title, description, links, progress, user_id, date_to_check=None):
         if info.context.user.is_anonymous:
             raise Exception('Not logged in!')
         if not info.context.user.role == "MANAGER":
@@ -70,7 +71,8 @@ class CreateTask(graphene.Mutation):
             links=links,
             progress=progress,
             user=user,
-            manager=info.context.user
+            manager=info.context.user,
+            date_to_check=date_to_check
         )
         return CreateTask(task=task)
 

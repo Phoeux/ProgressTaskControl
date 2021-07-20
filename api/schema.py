@@ -1,7 +1,8 @@
 import graphene
 from django.db.models import Q
 from graphene_django import DjangoObjectType
-
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 from api.models import Tasks, User
 
@@ -16,6 +17,7 @@ class TasksType(DjangoObjectType):
     class Meta:
         model = Tasks
         fields = '__all__'
+
 
 EnumUserRoles = graphene.Enum.from_enum(User.Role)
 
@@ -45,6 +47,7 @@ class CreateUser(graphene.Mutation):
 
 class CreateTask(graphene.Mutation):
     user = graphene.Field(UserType)
+    manager = graphene.Field(UserType)
     task = graphene.Field(TasksType)
 
     class Arguments:
@@ -52,7 +55,7 @@ class CreateTask(graphene.Mutation):
         description = graphene.String()
         links = graphene.String()
         progress = graphene.String()
-        user_id = graphene.Int()
+        user_id = graphene.ID()
 
     def mutate(self, info, title, description, links, progress, user_id):
         if info.context.user.is_anonymous:
@@ -66,7 +69,8 @@ class CreateTask(graphene.Mutation):
             description=description,
             links=links,
             progress=progress,
-            user=user
+            user=user,
+            manager=info.context.user
         )
         return CreateTask(task=task)
 
@@ -78,6 +82,8 @@ class UpdateTaskInput(graphene.InputObjectType):
     progress = graphene.String()
     finished = graphene.Boolean()
     user_id = graphene.ID()
+    manager_id = graphene.ID()
+    passed = graphene.Boolean()
 
 
 class UpdateTask(graphene.Mutation):
@@ -88,6 +94,8 @@ class UpdateTask(graphene.Mutation):
         upd_data = UpdateTaskInput(required=True)
 
     def mutate(self, info, id, upd_data=None):
+        if info.context.user.is_anonymous:
+            raise Exception('Not logged in!')
         task = Tasks.objects.get(id=id)
         if info.context.user.role == "MANAGER":
             for key, value in upd_data.items():
@@ -96,10 +104,14 @@ class UpdateTask(graphene.Mutation):
             task.progress = upd_data['progress']
         elif info.context.user.role == "USER" and 'finished' in upd_data.keys() and len(upd_data) == 1:
             task.finished = upd_data['finished']
-        elif info.context.user.role == "USER" and 'progress' in upd_data.keys() and 'finished' in upd_data.keys() and\
+            if task.finished:
+                task.date_to_check = date.today() + relativedelta(months=+3)
+        elif info.context.user.role == "USER" and 'progress' in upd_data.keys() and 'finished' in upd_data.keys() and \
                 len(upd_data) == 2:
             task.progress = upd_data['progress']
             task.finished = upd_data['finished']
+            if task.finished:
+                task.date_to_check = date.today() + relativedelta(months=+3)
         else:
             return Exception(
                 "Don't have permissions! Only manager can edit task. Simple user can edit only his progress")

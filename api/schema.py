@@ -1,6 +1,5 @@
 import graphene
 from django.db.models import Q
-from graphene import ID, Int
 from graphene_django import DjangoObjectType
 from datetime import date
 from dateutil.relativedelta import relativedelta
@@ -80,14 +79,11 @@ class CreateTask(graphene.Mutation):
     class Arguments:
         title = graphene.String(required=True)
         description = graphene.String(required=True)
-        # links_data = LinksInput(required=True)
         links_data = graphene.List(LinksInput)
-        # links_data=graphene.List(ID)
-        progress = graphene.String()
         user_id = graphene.ID(required=True)
         date_to_check = graphene.Date()
 
-    def mutate(self, info, title, description, links_data, progress, user_id, date_to_check=None):
+    def mutate(self, info, title, description, links_data, user_id, date_to_check=None):
         if info.context.user.is_anonymous:
             raise Exception('Not logged in!')
         if not info.context.user.role == "MANAGER":
@@ -97,7 +93,6 @@ class CreateTask(graphene.Mutation):
         task = Tasks(
             title=title,
             description=description,
-            progress=progress,
             user=user,
             manager=info.context.user,
             date_to_check=date_to_check
@@ -111,7 +106,6 @@ class UpdateTaskInput(graphene.InputObjectType):
     title = graphene.String()
     description = graphene.String()
     links = graphene.List(LinksInput)
-    progress = graphene.String()
     finished = graphene.Boolean()
     user_id = graphene.ID()
     manager_id = graphene.ID()

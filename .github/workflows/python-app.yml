@@ -46,8 +46,8 @@ jobs:
         username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
         key: ${{ secrets.KEY }}
         script: |
-          cd progress-task-control
-          sudo git push
+          cd ProgressTaskControl
+          sudo git pull
           git status
 
 

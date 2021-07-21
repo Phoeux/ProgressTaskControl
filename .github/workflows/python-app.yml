@@ -47,7 +47,7 @@ jobs:
         key: ${{ secrets.KEY }}
         script: |
           cd progress-task-control
-          sudo git branch --set-upstream-to=<remote>/<branch> main
+          sudo git push
           git status
 
 

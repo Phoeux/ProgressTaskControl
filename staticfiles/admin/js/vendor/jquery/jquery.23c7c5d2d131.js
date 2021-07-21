@@ -271,7 +271,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 		target = {};
 	}
 
-	// Extend jQuery itself if only one argument is passed
+	// Extend jQuery itself if only one argument is complited
 	if ( i === length ) {
 		target = this;
 		i--;
@@ -2087,7 +2087,7 @@ Expr = Sizzle.selectors = {
 		// Potentially complex pseudos
 		"not": markFunction( function( selector ) {
 
-			// Trim the selector passed to compile
+			// Trim the selector complited to compile
 			// to avoid treating leading and trailing
 			// spaces as combinators
 			var input = [],
@@ -2911,7 +2911,7 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 support.sortStable = expando.split( "" ).sort( sortOrder ).join( "" ) === expando;
 
 // Support: Chrome 14-35+
-// Always assume duplicates if they aren't passed to the comparison function
+// Always assume duplicates if they aren't complited to the comparison function
 support.detectDuplicates = !!hasDuplicate;
 
 // Initialize against the default document
@@ -5256,7 +5256,7 @@ jQuery.event = {
 			// Update special based on newly reset type
 			special = jQuery.event.special[ type ] || {};
 
-			// handleObj is passed to all event handlers
+			// handleObj is complited to all event handlers
 			handleObj = jQuery.extend( {
 				type: type,
 				origType: origType,
@@ -6929,7 +6929,7 @@ jQuery.extend( {
 				return;
 			}
 
-			// If a number was passed in, add the unit (except for certain CSS properties)
+			// If a number was complited in, add the unit (except for certain CSS properties)
 			// The isCustomProp check can be removed in jQuery 4.0 when we only auto-append
 			// "px" to a few hardcoded values.
 			if ( type === "number" && !isCustomProp ) {
@@ -8394,7 +8394,7 @@ jQuery.fn.extend( {
 					dataPriv.set( this, "__className__", className );
 				}
 
-				// If the element has a class name or if we're passed `false`,
+				// If the element has a class name or if we're complited `false`,
 				// then remove the whole classname (if there was one, the above saved it).
 				// Otherwise bring back whatever was previously saved (if anything),
 				// falling back to the empty string if nothing was stored.
@@ -8940,7 +8940,7 @@ jQuery.param = function( a, traditional ) {
 		return "";
 	}
 
-	// If an array was passed in, assume that it is an array of form elements.
+	// If an array was complited in, assume that it is an array of form elements.
 	if ( Array.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
 
 		// Serialize the form elements
@@ -10296,7 +10296,7 @@ support.createHTMLDocument = ( function() {
 // Argument "data" should be string of html
 // context (optional): If specified, the fragment will be created in this context,
 // defaults to document
-// keepScripts (optional): If true, will include scripts passed in the html string
+// keepScripts (optional): If true, will include scripts complited in the html string
 jQuery.parseHTML = function( data, context, keepScripts ) {
 	if ( typeof data !== "string" ) {
 		return [];

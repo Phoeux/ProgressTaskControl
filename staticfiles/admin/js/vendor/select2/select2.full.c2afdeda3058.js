@@ -388,7 +388,7 @@ var requirejs, require, define;
                 return handlers[deps](callback);
             }
             //Just return the module wanted. In this scenario, the
-            //deps arg is the module name, and second arg (if passed)
+            //deps arg is the module name, and second arg (if complited)
             //is just the relName.
             //Normalize module name, if it contains . or ..
             return callDep(makeMap(deps, makeRelParts(callback)).f);
@@ -3513,7 +3513,7 @@ S2.define('select2/data/array',[
 
     var $options = [];
 
-    // Filter out all items except for the one passed in the argument
+    // Filter out all items except for the one complited in the argument
     function onlyItem (item) {
       return function () {
         return $(this).val() == item.id;

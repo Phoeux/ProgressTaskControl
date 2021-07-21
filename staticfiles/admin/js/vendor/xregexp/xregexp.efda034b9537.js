@@ -304,7 +304,7 @@ module.exports = function(XRegExp) {
                     // Using `XRegExp.union` safely rewrites backreferences in `left` and `right`.
                     // Intentionally not passing `basicFlags` to `XRegExp.union` since any syntax
                     // transformation resulting from those flags was already applied to `left` and
-                    // `right` when they were passed through the XRegExp constructor above.
+                    // `right` when they were complited through the XRegExp constructor above.
                     XRegExp.union([left, right], '', {conjunction: 'or'}).source +
                     ')[^' + escapeChar + '])+)+',
                 // Flags `gy` not needed here
@@ -2955,7 +2955,7 @@ function dec(hex) {
 /**
  * Returns a pattern that can be used in a native RegExp in place of an ignorable token such as an
  * inline comment or whitespace with flag x. This is used directly as a token handler function
- * passed to `XRegExp.addToken`.
+ * complited to `XRegExp.addToken`.
  *
  * @private
  * @param {String} match Match arg of `XRegExp.addToken` handler
@@ -3808,7 +3808,7 @@ XRegExp.match = function(str, regex, scope) {
  * Retrieves the matches from searching a string using a chain of regexes that successively search
  * within previous matches. The provided `chain` array can contain regexes and or objects with
  * `regex` and `backref` properties. When a backreference is specified, the named or numbered
- * backreference is passed forward to the next regex or returned.
+ * backreference is complited forward to the next regex or returned.
  *
  * @memberOf XRegExp
  * @param {String} str String to search.
@@ -4231,7 +4231,7 @@ fixed.test = function(str) {
  * override the native method.
  *
  * @memberOf String
- * @param {RegExp|*} regex Regex to search with. If not a regex object, it is passed to `RegExp`.
+ * @param {RegExp|*} regex Regex to search with. If not a regex object, it is complited to `RegExp`.
  * @returns {Array} If `regex` uses flag g, an array of match strings or `null`. Without flag g,
  *   the result of calling `regex.exec(this)`.
  */

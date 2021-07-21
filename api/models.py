@@ -21,7 +21,7 @@ class User(AbstractUser):
 class Tasks(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField()
-    links = models.TextField()
+    links = models.ManyToManyField('Links')
     progress = models.CharField(max_length=20)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='simple_user')
     manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='manager_user')
@@ -35,3 +35,13 @@ class Tasks(models.Model):
     class Meta:
         verbose_name = 'Задание'
         verbose_name_plural = 'Задания'
+
+
+class Links(models.Model):
+    url = models.URLField()
+    complited = models.BooleanField(default=False)
+
+
+# class LinksTasks(models.Model):
+#     links = models.ForeignKey(Links, on_delete=models.DO_NOTHING, related_name='linkstasks_links')
+#     tasks = models.ForeignKey(Tasks, on_delete=models.DO_NOTHING, related_name='linkstasks_tasks')

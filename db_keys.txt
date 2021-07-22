@@ -1,0 +1,4 @@
+DB_USER=django_user
+DB_PASSWORD=django_pwd
+DB_NAME=django_db
+DB_HOST=localhost

@@ -23,5 +23,5 @@ urlpatterns = [
     path('', include('api.urls')),
     path('admin/', admin.site.urls),
     path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
-    path('playground/', GraphQLPlaygroundView.as_view(endpoint="https://progress-task-control.herokuapp.com/graphql/"))
+    path('playground/', GraphQLPlaygroundView.as_view(endpoint="http://34.135.246.164/graphql/"))
 ]

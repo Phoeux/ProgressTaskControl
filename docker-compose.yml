@@ -2,8 +2,44 @@ version: "3"
 
 
 services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django
+    volumes:
+      - .:/ProgressTaskControl
+    env_file:
+      - db_keys.txt
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    command: bash -c 'python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000'
+
+  db:
+    image: postgres:latest
+    container_name: postgres2
+    env_file:
+      - db_keys.txt
+
   redis:
     image: redis:latest
     container_name: redis
     ports:
-    - "6379:6379"
+      - "6379:6379"
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: celery_w
+    volumes:
+      - .:/ProgressTaskControl
+    env_file:
+      - db_keys.txt
+    depends_on:
+      - redis
+    ports:
+      - '5555:5555'
+    command: bash -c 'celery -A src  worker -l INFO -B -E'

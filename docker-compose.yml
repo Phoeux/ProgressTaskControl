@@ -10,7 +10,7 @@ services:
     volumes:
       - .:/ProgressTaskControl
     env_file:
-      - db_keys.txt
+      - .env.dev
     ports:
       - "8000:8000"
     depends_on:
@@ -21,7 +21,7 @@ services:
     image: postgres:latest
     container_name: postgres2
     env_file:
-      - db_keys.txt
+      - .env.dev
 
   redis:
     image: redis:latest
@@ -37,7 +37,7 @@ services:
     volumes:
       - .:/ProgressTaskControl
     env_file:
-      - db_keys.txt
+      - .env.dev
     depends_on:
       - redis
     ports:

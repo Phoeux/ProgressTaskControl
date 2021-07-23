@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
 from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -87,8 +86,11 @@ DATABASES = {
         'NAME': os.environ.get("POSTGRES_DB"),
         'USER': os.environ.get("POSTGRES_USER"),
         'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
-        'PORT': 5432,
-        'HOST': "db"
+        'PORT': os.environ.get("POSTGRES_PORT"),
+        'HOST': os.environ.get("POSTGRES_HOST"),
+        'TEST': {
+            'NAME': os.environ.get("POSTGRES_DB"),
+        },
     }
 }
 
@@ -148,7 +150,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-# DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 CELERY_BROKER_URL = 'redis://redis:6379'
 CELERY_RESULT_BACKEND = 'django-db'
@@ -171,4 +172,4 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_PORT = 587
 
 EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+

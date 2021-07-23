@@ -40,8 +40,3 @@ class Tasks(models.Model):
 class Links(models.Model):
     url = models.URLField()
     complited = models.BooleanField(default=False)
-
-
-# class LinksTasks(models.Model):
-#     links = models.ForeignKey(Links, on_delete=models.DO_NOTHING, related_name='linkstasks_links')
-#     tasks = models.ForeignKey(Tasks, on_delete=models.DO_NOTHING, related_name='linkstasks_tasks')

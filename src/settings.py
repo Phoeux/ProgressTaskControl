@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 from celery.schedules import crontab
-
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -83,13 +83,13 @@ WSGI_APPLICATION = 'src.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get("POSTGRES_DB"),
-        'USER': os.environ.get("POSTGRES_USER"),
-        'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
-        'PORT': os.environ.get("POSTGRES_PORT"),
-        'HOST': os.environ.get("POSTGRES_HOST"),
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'PORT': 5432,
+        'HOST': os.environ.get("DB_HOST"),
         'TEST': {
-            'NAME': os.environ.get("POSTGRES_DB"),
+            'NAME': 'django_db',
         },
     }
 }
@@ -138,6 +138,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 AUTH_USER_MODEL = "api.User"
 
+# DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
 GRAPHENE = {
     "SCHEMA": "src.schema.schema",
     'MIDDLEWARE': [
@@ -161,7 +163,7 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_BEAT_SCHEDULE = {
     "task_one": {
         "task": "api.tasks.notifications",
-        "schedule": crontab(minute=0, hour=0)
+        "schedule": crontab()
     }
 }
 

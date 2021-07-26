@@ -83,11 +83,11 @@ WSGI_APPLICATION = 'src.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get("DB_NAME"),
-        'USER': os.environ.get("DB_USER"),
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'NAME': 'django_db',
+        'USER': 'user',
+        'PASSWORD': 'password',
         'PORT': 5432,
-        'HOST': os.environ.get("DB_HOST"),
+        'HOST': 'localhost',
         'TEST': {
             'NAME': 'django_db',
         },
@@ -163,7 +163,7 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_BEAT_SCHEDULE = {
     "task_one": {
         "task": "api.tasks.notifications",
-        "schedule": crontab()
+        "schedule": crontab(minute=0, hour=0)
     }
 }
 

@@ -33,12 +33,25 @@ jobs:
     - name: Test with pytest
       run: |
         python manage.py
-        
+
+  set_secrets_job:
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        service_account_email: ${{ secrets.GCP_EMAIL }}
+        service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+        export_default_credentials: true
+
   deploy_job:
     needs: [test_job]
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+    - name: setting secrets
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        service_account_email: ${{ secrets.EMAIL }}
+        service_account_key: ${{ secrets.EMAIL_PASSWORD }}
+        export_default_credentials: true
     - name: testing google servive cloud server ssh connection
       uses: appleboy/ssh-action@master
       with:

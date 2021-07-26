@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'graphql_playground',
     'djcelery_email',
     'django_celery_results',
+    'corsheaders',
 
     'api',
 ]

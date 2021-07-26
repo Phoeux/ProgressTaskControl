@@ -39,14 +39,6 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: setting secrets
-      uses: google-github-actions/setup-gcloud@master
-      with:
-        service_account_email: ${{ secrets.EMAIL }}
-        service_account_key: ${{ secrets.EMAIL_PASSWORD }}
-        export_default_credentials: true
-    - name: Use gcloud CLI
-      run: gcloud info
     - name: testing google servive cloud server ssh connection
       uses: appleboy/ssh-action@master
       with:

@@ -45,7 +45,6 @@ jobs:
         host: ${{ secrets.DEPLOY_SERVER_HOST }}
         username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
         key: ${{ secrets.KEY }}
-        export_default_credentials: true
         script: |
           cd ProgressTaskControl
           sudo git pull

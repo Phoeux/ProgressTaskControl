@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'djcelery_email',
     'django_celery_results',
     'corsheaders',
+    'social_django',
 
     'api',
 ]
@@ -81,20 +82,48 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': os.environ.get('POSTGRES_DB'),
+#         'USER': os.environ.get('POSTGRES_USER'),
+#         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+#         'PORT': 5432,
+#         'HOST': 'db',
+#     }
+# }
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_db',
-        'USER': 'django_user',
-        'PASSWORD': 'django_pwd',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
         'PORT': 5432,
         'HOST': 'localhost',
-        'TEST': {
-            'NAME': 'django_db',
-        },
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'django_db',
+#         'USER': 'django_user',
+#         'PASSWORD': 'django_pwd',
+#         'PORT': 5432,
+#         'HOST': 'localhost',
+#         'TEST': {
+#             'NAME': 'django_db',
+#         },
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -151,6 +180,7 @@ GRAPHENE = {
 
 AUTHENTICATION_BACKENDS = [
     'graphql_jwt.backends.JSONWebTokenBackend',
+    'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -178,3 +208,13 @@ EMAIL_PORT = 587
 EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '381218398642-md7ol4q88a6a4nv26rogbc92otld932t.apps.googleusercontent.com'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'W4s9BhJCFSLgu9Bdhg423HaK'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+LOGIN_URL = '/login/google-oauth2/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

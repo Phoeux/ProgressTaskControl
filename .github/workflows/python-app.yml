@@ -65,9 +65,10 @@ jobs:
         key: ${{ secrets.KEY }}
         export_default_credentials: true      
         script: |
+          source env/bin/activate
           cd ProgressTaskControl
-          sudo git pull
+          sudo git pull          
+          git status          
           sudo pip install -r requirements.txt
-          git status
 
 

@@ -50,11 +50,7 @@ jobs:
     steps:
     - name: testing google servive cloud server ssh connection
       uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.DEPLOY_SERVER_HOST }}
-        username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
-        key: ${{ secrets.KEY }}
-        export_default_credentials: true
+      env:
         DB_NAME: ${{ secrets.DB_NAME }}
         DB_USER: ${{ secrets.DB_USER }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -63,6 +59,11 @@ jobs:
         EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         GOOGLE_OAUTH2_KEY: ${{ secrets.GOOGLE_OAUTH2_KEY }}
         GOOGLE_OAUTH2_SECRET: ${{ secrets.GOOGLE_OAUTH2_SECRET }}
+      with:
+        host: ${{ secrets.DEPLOY_SERVER_HOST }}
+        username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
+        key: ${{ secrets.KEY }}
+        export_default_credentials: true      
         script: |
           cd ProgressTaskControl
           sudo git pull

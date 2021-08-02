@@ -55,9 +55,18 @@ jobs:
         username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
         key: ${{ secrets.KEY }}
         export_default_credentials: true
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        EMAIL: ${{ secrets.EMAIL }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        GOOGLE_OAUTH2_KEY: ${{ secrets.GOOGLE_OAUTH2_KEY }}
+        GOOGLE_OAUTH2_SECRET: ${{ secrets.GOOGLE_OAUTH2_SECRET }}
         script: |
           cd ProgressTaskControl
           sudo git pull
+          sudo pip install -r requirements.txt
           git status
 
 

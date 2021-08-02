@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 from celery.schedules import crontab
 from decouple import config
 
@@ -83,6 +84,8 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -91,8 +94,13 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD'),
         'PORT': 5432,
         'HOST': config('DB_HOST'),
+        'TEST': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'mydatabase'
+        }
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

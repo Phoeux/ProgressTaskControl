@@ -94,13 +94,14 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD'),
         'PORT': 5432,
         'HOST': config('DB_HOST'),
-        'TEST': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'mydatabase'
-        }
     }
 }
 
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase'
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

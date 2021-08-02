@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 from celery.schedules import crontab
-import dj_database_url
+from decouple import config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -82,46 +83,14 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': os.environ.get('POSTGRES_DB'),
-#         'USER': os.environ.get('POSTGRES_USER'),
-#         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-#         'PORT': 5432,
-#         'HOST': 'db',
-#     }
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': os.environ.get('DB_NAME'),
-#         'USER': os.environ.get('DB_USER'),
-#         'PASSWORD': os.environ.get('DB_PASSWORD'),
-#         'PORT': 5432,
-#         'HOST': 'localhost',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_db',
-        'USER': 'django_user',
-        'PASSWORD': 'django_pwd',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
         'PORT': 5432,
-        'HOST': 'localhost',
-        'TEST': {
-            'NAME': 'django_db',
-        },
+        'HOST': config('DB_HOST'),
     }
 }
 
@@ -169,8 +138,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 AUTH_USER_MODEL = "api.User"
 
-# DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-
 GRAPHENE = {
     "SCHEMA": "src.schema.schema",
     'MIDDLEWARE': [
@@ -183,7 +150,6 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
-
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'django-db'
@@ -201,18 +167,17 @@ CELERY_BEAT_SCHEDULE = {
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.environ.get('EMAIL')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+EMAIL_HOST_USER = config('EMAIL')
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
 EMAIL_PORT = 587
 
 EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '381218398642-md7ol4q88a6a4nv26rogbc92otld932t.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'W4s9BhJCFSLgu9Bdhg423HaK'
-# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_KEY')
-# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('GOOGLE_OAUTH2_SECRET')
+
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 LOGIN_URL = '/login/google-oauth2/'

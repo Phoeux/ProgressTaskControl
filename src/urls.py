@@ -24,8 +24,9 @@ from graphql_playground.views import GraphQLPlaygroundView
 urlpatterns = [
     path('', include('api.urls')),
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')),
     path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
     path('playground/', GraphQLPlaygroundView.as_view(endpoint="http://34.135.246.164/graphql/")),
-    path('', include('social_django.urls', namespace='social')),
+    path('google-auth/', include('social_django.urls', namespace='social')),
     path('logout', LogoutView.as_view()),
 ]

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'corsheaders',
     'social_django',
+    'rest_framework',
 
     'api',
 ]

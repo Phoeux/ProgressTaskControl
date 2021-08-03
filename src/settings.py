@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'corsheaders',
     'social_django',
-
+    'rest_framework',
     'api',
 ]
 
@@ -87,16 +87,8 @@ WSGI_APPLICATION = 'src.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('DB_NAME') or os.environ.get('DB_NAME'),
-        'USER': config('DB_USER') or os.environ.get('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD') or os.environ.get('DB_PASSWORD'),
-        'PORT': 5432,
-        'HOST': config('DB_HOST') or os.environ.get('DB_HOST'),
-        'TEST': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'mydatabase'
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

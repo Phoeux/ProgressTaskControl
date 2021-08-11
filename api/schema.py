@@ -66,7 +66,8 @@ class CreateUser(graphene.Mutation):
 
 
 class LinksInput(graphene.InputObjectType):
-    id = graphene.ID(requared=True)
+    # id = graphene.ID(requared=True)
+    link = graphene.String(requared=True)
     complited = graphene.Boolean()
 
 
@@ -89,7 +90,11 @@ class CreateTask(graphene.Mutation):
         if not info.context.user.role == "MANAGER":
             raise Exception("Only Manager can create tasks")
         user = User.objects.get(id=user_id)
-        links = Links.objects.filter(id__in=[val['id'] for val in links_data])
+        # links = Links.objects.filter(id__in=[val['id'] for val in links_data])
+        created_links = []
+        for link in links_data:
+            links = Links.objects.create(url=link['link'])
+            created_links.append(links)
         task = Tasks(
             title=title,
             description=description,
@@ -98,7 +103,8 @@ class CreateTask(graphene.Mutation):
             date_to_check=date_to_check
         )
         task.save()
-        task.links.set(links)
+        task.links.set(created_links)
+        # task.links.set(links)
         return CreateTask(task=task)
 
 
